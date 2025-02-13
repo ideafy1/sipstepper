@@ -4,11 +4,14 @@ import CalculatorInput from '@/components/Calculator/CalculatorInput';
 import ResultsChart from '@/components/Calculator/ResultsChart';
 import ResultsCard from '@/components/Calculator/ResultsCard';
 import InvestmentInsights from '@/components/Calculator/InvestmentInsights';
+import InvestmentComparison from '@/components/Calculator/InvestmentComparison';
+import InvestmentTypeSelector from '@/components/Calculator/InvestmentTypeSelector';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calculator, TrendingUp, Percent } from 'lucide-react';
 
 const Index = () => {
+  const [investmentType, setInvestmentType] = useState('sip');
   const [monthlyInvestment, setMonthlyInvestment] = useState('5000');
   const [investmentPeriod, setInvestmentPeriod] = useState('10');
   const [expectedReturn, setExpectedReturn] = useState('12');
@@ -69,14 +72,19 @@ const Index = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Step-Up SIP Calculator
+            Investment Calculator
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Plan your financial future with our Step-Up SIP calculator. Visualize how increasing your monthly investments annually can significantly boost your wealth.
+            Plan your financial future with our comprehensive investment calculator. Compare different investment types and strategies.
           </p>
         </div>
 
         <Card className="p-6 md:p-8 glass">
+          <InvestmentTypeSelector
+            selectedType={investmentType}
+            onSelect={setInvestmentType}
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-6">
               <CalculatorInput
@@ -109,16 +117,18 @@ const Index = () => {
                 step={0.5}
                 info="Historical equity returns: 12-15% p.a."
               />
-              <CalculatorInput
-                label="Annual Increase in Investment"
-                value={annualIncrease}
-                onChange={setAnnualIncrease}
-                suffix="%"
-                min={0}
-                max={100}
-                step={1}
-                info="Increase SIP with your income growth"
-              />
+              {investmentType === 'sip' && (
+                <CalculatorInput
+                  label="Annual Increase in Investment"
+                  value={annualIncrease}
+                  onChange={setAnnualIncrease}
+                  suffix="%"
+                  min={0}
+                  max={100}
+                  step={1}
+                  info="Increase SIP with your income growth"
+                />
+              )}
               <Button 
                 className="w-full button-primary"
                 onClick={calculateReturns}
@@ -144,13 +154,22 @@ const Index = () => {
         </Card>
 
         {results && (
-          <Card className="p-6 md:p-8 glass">
-            <InvestmentInsights
-              monthlyInvestment={parseFloat(monthlyInvestment)}
-              finalAmount={results.finalAmount}
-              years={parseInt(investmentPeriod)}
-            />
-          </Card>
+          <>
+            <Card className="p-6 md:p-8 glass">
+              <InvestmentInsights
+                monthlyInvestment={parseFloat(monthlyInvestment)}
+                finalAmount={results.finalAmount}
+                years={parseInt(investmentPeriod)}
+              />
+            </Card>
+
+            <Card className="p-6 md:p-8 glass">
+              <InvestmentComparison
+                amount={results.totalInvestment}
+                years={parseInt(investmentPeriod)}
+              />
+            </Card>
+          </>
         )}
 
         <div className="text-center text-sm text-gray-500">
