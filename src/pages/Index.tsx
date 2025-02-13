@@ -68,25 +68,25 @@ const Index = () => {
   }, [monthlyInvestment, investmentPeriod, expectedReturn, annualIncrease]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 p-2 sm:p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
+        <div className="text-center space-y-2 sm:space-y-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
             Investment Calculator
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
             Plan your financial future with our comprehensive investment calculator. Compare different investment types and strategies.
           </p>
         </div>
 
-        <Card className="p-6 md:p-8 glass">
+        <Card className="p-4 sm:p-6 md:p-8 glass">
           <InvestmentTypeSelector
             selectedType={investmentType}
             onSelect={setInvestmentType}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+            <div className="space-y-4 sm:space-y-6">
               <CalculatorInput
                 label="Monthly Investment"
                 value={monthlyInvestment}
@@ -138,7 +138,7 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {results && (
                 <>
                   <ResultsCard
@@ -155,7 +155,7 @@ const Index = () => {
 
         {results && (
           <>
-            <Card className="p-6 md:p-8 glass">
+            <Card className="p-4 sm:p-6 md:p-8 glass">
               <InvestmentInsights
                 monthlyInvestment={parseFloat(monthlyInvestment)}
                 finalAmount={results.finalAmount}
@@ -163,7 +163,7 @@ const Index = () => {
               />
             </Card>
 
-            <Card className="p-6 md:p-8 glass">
+            <Card className="p-4 sm:p-6 md:p-8 glass">
               <InvestmentComparison
                 amount={results.totalInvestment}
                 years={parseInt(investmentPeriod)}
@@ -172,7 +172,7 @@ const Index = () => {
           </>
         )}
 
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-xs sm:text-sm text-gray-500 px-4">
           Note: The calculations are based on assumed annual returns and may vary from actual returns. Past performance does not guarantee future results.
         </div>
       </div>
