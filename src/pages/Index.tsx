@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 import CalculatorInput from '@/components/Calculator/CalculatorInput';
 import ResultsChart from '@/components/Calculator/ResultsChart';
 import ResultsCard from '@/components/Calculator/ResultsCard';
+import InvestmentInsights from '@/components/Calculator/InvestmentInsights';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calculator, TrendingUp, Percent } from 'lucide-react';
@@ -23,6 +24,7 @@ const Index = () => {
     let totalInvestment = 0;
     let totalValue = 0;
     const chartData = [];
+    const yearlyDetails = [];
 
     let currentMonthlyInvestment = monthly;
 
@@ -31,12 +33,22 @@ const Index = () => {
       totalInvestment += yearlyInvestment;
 
       // Calculate returns for this year
+      const previousValue = totalValue;
       totalValue = (totalValue + yearlyInvestment) * (1 + returnRate);
+      const yearlyReturn = totalValue - previousValue - yearlyInvestment;
 
       chartData.push({
         year,
         investment: totalInvestment,
         returns: totalValue,
+      });
+
+      yearlyDetails.push({
+        year,
+        monthlyInvestment: currentMonthlyInvestment,
+        yearlyInvestment,
+        yearlyReturn,
+        totalValue,
       });
 
       // Increase monthly investment for next year
@@ -48,6 +60,7 @@ const Index = () => {
       totalReturns: totalValue - totalInvestment,
       finalAmount: totalValue,
       chartData,
+      yearlyDetails,
     });
   }, [monthlyInvestment, investmentPeriod, expectedReturn, annualIncrease]);
 
@@ -73,6 +86,8 @@ const Index = () => {
                 prefix="₹"
                 min={500}
                 max={1000000}
+                step={500}
+                info="Start with a comfortable monthly amount"
               />
               <CalculatorInput
                 label="Investment Period"
@@ -81,6 +96,8 @@ const Index = () => {
                 suffix="Years"
                 min={1}
                 max={40}
+                step={1}
+                info="Longer periods typically yield better results"
               />
               <CalculatorInput
                 label="Expected Return Rate"
@@ -89,6 +106,8 @@ const Index = () => {
                 suffix="%"
                 min={1}
                 max={30}
+                step={0.5}
+                info="Historical equity returns: 12-15% p.a."
               />
               <CalculatorInput
                 label="Annual Increase in Investment"
@@ -97,6 +116,8 @@ const Index = () => {
                 suffix="%"
                 min={0}
                 max={100}
+                step={1}
+                info="Increase SIP with your income growth"
               />
               <Button 
                 className="w-full button-primary"
@@ -122,8 +143,18 @@ const Index = () => {
           </div>
         </Card>
 
+        {results && (
+          <Card className="p-6 md:p-8 glass">
+            <InvestmentInsights
+              monthlyInvestment={parseFloat(monthlyInvestment)}
+              finalAmount={results.finalAmount}
+              years={parseInt(investmentPeriod)}
+            />
+          </Card>
+        )}
+
         <div className="text-center text-sm text-gray-500">
-          Note: The calculations are based on assumed annual returns and may vary from actual returns.
+          Note: The calculations are based on assumed annual returns and may vary from actual returns. Past performance does not guarantee future results.
         </div>
       </div>
     </div>

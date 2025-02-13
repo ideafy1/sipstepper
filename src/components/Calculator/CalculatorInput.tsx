@@ -2,6 +2,7 @@
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 interface CalculatorInputProps {
   label: string;
@@ -13,6 +14,7 @@ interface CalculatorInputProps {
   step?: number;
   suffix?: string;
   prefix?: string;
+  info?: string;
 }
 
 const CalculatorInput: React.FC<CalculatorInputProps> = ({
@@ -20,15 +22,23 @@ const CalculatorInput: React.FC<CalculatorInputProps> = ({
   value,
   onChange,
   type = "number",
-  min,
-  max,
-  step,
+  min = 0,
+  max = 100,
+  step = 1,
   suffix,
   prefix,
+  info,
 }) => {
+  const handleSliderChange = (values: number[]) => {
+    onChange(values[0].toString());
+  };
+
   return (
     <div className="input-container animate-fadeIn">
-      <Label className="input-label">{label}</Label>
+      <div className="flex justify-between items-center">
+        <Label className="input-label">{label}</Label>
+        {info && <span className="text-xs text-gray-500">{info}</span>}
+      </div>
       <div className="relative">
         {prefix && (
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -50,6 +60,15 @@ const CalculatorInput: React.FC<CalculatorInputProps> = ({
           </span>
         )}
       </div>
+      <Slider
+        defaultValue={[parseFloat(value.toString())]}
+        max={max}
+        min={min}
+        step={step}
+        value={[parseFloat(value.toString())]}
+        onValueChange={handleSliderChange}
+        className="mt-2"
+      />
     </div>
   );
 };
