@@ -189,6 +189,13 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 p-2 sm:p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-8">
         <div className="text-center space-y-2 sm:space-y-4">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <img 
+              src="https://www.sharekhan.com/assets/images/logo.svg" 
+              alt="Sharekhan Logo" 
+              className="h-8 sm:h-10"
+            />
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900">
             Investment Calculator
           </h1>
@@ -197,7 +204,7 @@ const Index = () => {
           </p>
         </div>
 
-        <Card className="p-4 sm:p-6 md:p-8 glass">
+        <Card className="p-4 sm:p-6 md:p-8 glass overflow-hidden">
           <InvestmentTypeSelector
             selectedType={investmentType}
             onSelect={setInvestmentType}
@@ -270,7 +277,9 @@ const Index = () => {
         )}
 
         <div className="text-center text-xs sm:text-sm text-gray-500 px-4">
-          Note: The calculations are based on assumed annual returns and may vary from actual returns. Past performance does not guarantee future results.
+          <p>The calculations are based on assumed annual returns and may vary from actual returns.</p>
+          <p>Past performance does not guarantee future results.</p>
+          <p className="mt-2">© 2024 Sharekhan Investment Calculator. All rights reserved.</p>
         </div>
       </div>
     </div>

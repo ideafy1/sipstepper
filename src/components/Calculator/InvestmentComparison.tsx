@@ -17,28 +17,48 @@ const InvestmentComparison: React.FC<ComparisonProps> = ({ amount, years }) => {
     }).format(value);
   };
 
-  const calculateReturns = (principal: number, rate: number, years: number) => {
-    return principal * Math.pow(1 + rate, years);
+  const calculateFDReturns = (principal: number, rate: number, years: number) => {
+    const quarterlyRate = rate / 4;
+    return principal * Math.pow(1 + quarterlyRate / 100, 4 * years);
+  };
+
+  const calculateRDReturns = (monthlyInvestment: number, rate: number, years: number) => {
+    const monthlyRate = rate / 12 / 100;
+    const months = years * 12;
+    return monthlyInvestment * (Math.pow(1 + monthlyRate, months) - 1) / monthlyRate;
+  };
+
+  const calculatePPFReturns = (principal: number, rate: number, years: number) => {
+    let totalAmount = principal;
+    const yearlyContribution = principal;
+    for (let i = 1; i < years; i++) {
+      totalAmount += yearlyContribution;
+      totalAmount *= (1 + rate / 100);
+    }
+    return totalAmount;
   };
 
   const comparisons = [
     {
       name: "Fixed Deposit",
-      rate: 0.065,
+      rate: 6.5,
       icon: <Percent className="w-5 h-5 text-primary" />,
-      description: "Traditional bank FD returns"
+      description: "Quarterly compounding",
+      calculate: () => calculateFDReturns(amount, 6.5, years)
     },
     {
       name: "Recurring Deposit",
-      rate: 0.06,
+      rate: 6.0,
       icon: <TrendingUp className="w-5 h-5 text-primary" />,
-      description: "Standard RD returns"
+      description: "Monthly investment",
+      calculate: () => calculateRDReturns(amount / (years * 12), 6.0, years)
     },
     {
       name: "PPF",
-      rate: 0.071,
+      rate: 7.1,
       icon: <TrendingUp className="w-5 h-5 text-primary" />,
-      description: "Public Provident Fund"
+      description: "15-year lock-in period",
+      calculate: () => calculatePPFReturns(amount / years, 7.1, years)
     }
   ];
 
@@ -47,7 +67,7 @@ const InvestmentComparison: React.FC<ComparisonProps> = ({ amount, years }) => {
       <h3 className="text-xl font-semibold text-gray-800">Compare with Other Investments</h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {comparisons.map((item) => {
-          const returns = calculateReturns(amount, item.rate, years);
+          const returns = item.calculate();
           return (
             <Card key={item.name} className="p-4 glass card-hover">
               <div className="flex items-start space-x-3">
@@ -60,13 +80,18 @@ const InvestmentComparison: React.FC<ComparisonProps> = ({ amount, years }) => {
                     {formatCurrency(returns)}
                   </p>
                   <p className="text-sm text-gray-500">
-                    {item.description} ({(item.rate * 100).toFixed(1)}% p.a.)
+                    {item.description} ({item.rate}% p.a.)
                   </p>
                 </div>
               </div>
             </Card>
           );
         })}
+      </div>
+      <div className="text-sm text-gray-500 mt-4">
+        <p>* FD rates assume quarterly compounding</p>
+        <p>* RD calculation assumes monthly deposits</p>
+        <p>* PPF has a lock-in period of 15 years with annual compounding</p>
       </div>
     </div>
   );
